@@ -3,7 +3,7 @@ for i in `docker ps -q`
 	containerID=$i
 	container_name=`timeout 3 docker inspect --format='{{.Name}}' "$containerID"`
 	# If Container name is not null then we need to proceed otherwise  stop.
-	if [ ! -z "$container_name" -a "$container_name" != " " ]; then
+	if [ ! -z "$container_name" -a "$container_name" != " " -a "$container_name" = "/ci-cd" ]; then
         	echo -n "$container_name - "
 	        container_image=`docker inspect --format='{{.Config.Image}}' $container_name`
 	        mkdir -p $backup_path/$container_name
@@ -18,7 +18,7 @@ for i in `docker ps -q`
 		chmod 755 "$save_file"
 		echo -n "Copying the backup to remote location.. Please be patient!"		
 		echo ""
-		scp -rp $save_folder $target_path
+		scp -i ~/.ssh/id_rsa -rp $save_folder $target_path
 		echo ""	
 		echo -n "Copied successfully!"
 		echo ""

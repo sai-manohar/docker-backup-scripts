@@ -5,24 +5,26 @@ for i in `docker ps -q`
 	# If Container name is not null then we need to proceed otherwise  stop.
 	if [ ! -z "$container_name" -a "$container_name" != " " -a "$container_name" = "/ci-cd" ]; then
 #	if [ ! -z "$container_name" -a "$container_name" != " "  ]; then
+		# Commiting docker
 		echo "Committing docker.."
 		echo ""	        
 	        mod_container_name=$(echo $container_name | cut -c 2-)	        
-	        #docker commit $containerID $mod_container_name:latest
+	        docker commit $containerID $mod_container_name:latest
         	echo -n "$container_name - "
-	        container_image=`docker inspect --format='{{.Config.Image}}' $container_name`
+	        container_image=`docker images $mod_container_name:latest -q `
 		echo "$container_image"
+		# Creating path to put backup file
 	        mkdir -p $backup_path/$container_name
 	        save_file="$backup_path$container_name$container_name-image.tar"
 		save_folder="$backup_path$container_name"
 		echo "$save_file"
+		# Creating backup
 	        docker save -o $save_file $container_image
-	        echo "OK"
-		# change permissions of the fiel tar file
-		echo -n  "Changing permissions of the backup created.."
+	        echo "OK"		
 		# change permissions of the tar file
 		echo -n  "Changing permissions of the backup created.."
 		echo ""
+		# Copying backup to remote location
 		chmod 755 "$save_file"
 		echo -n "Copying the backup to remote location.. Please be patient!"		
 		echo ""
@@ -32,8 +34,7 @@ for i in `docker ps -q`
 		echo ""
 		echo -n "Removing the image created in the docker server."
 		echo ""
-		# remove local image,e
-	        # uploaded well before deleting
+		# remove local image
         	rm -f $save_file
 		echo -n "$container_image"  - Done
 		echo ""

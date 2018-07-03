@@ -12,7 +12,7 @@ for i in `docker ps -q`
 		echo "$save_file"
 	        docker save -o $save_file $container_image
 	        echo "OK"
-		# change permissions of the fiel tar file
+		# change permissions of the tar file
 		echo -n  "Changing permissions of the backup created.."
 		echo ""
 		chmod 755 "$save_file"

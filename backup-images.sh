@@ -3,12 +3,12 @@ for i in `docker ps -q`
 	containerID=$i	
 	container_name=`timeout 3 docker inspect --format='{{.Name}}' "$containerID"`
 	# If Container name is not null then we need to proceed otherwise  stop.
-	if [ ! -z "$container_name" -a "$container_name" != " " -a "$container_name" = "/ci-cd" ]; then
-#	if [ ! -z "$container_name" -a "$container_name" != " "  ]; then
+#	if [ ! -z "$container_name" -a "$container_name" != " " -a "$container_name" = "/mariadb-10.2" ]; then
+	if [ ! -z "$container_name" -a "$container_name" != " "  ]; then
 		# Commiting docker
-		echo "Committing docker.."
 		echo ""	        
 	        mod_container_name=$(echo $container_name | cut -c 2-)	        
+		echo "Committing docker..  -- $mod_container_name"
 	        docker commit $containerID $mod_container_name:latest
         	echo -n "$container_name - "
 	        container_image=`docker images $mod_container_name:latest -q `
